@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<title></title>
+		<link type="text/css" rel="stylesheet" href="/static/styles.css" />
+		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />  
+		<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+		<style type="text/css">
+			@import '/static/pagination.css';
+		</style>
+		<script type="text/javascript" src="/static/DOMhelp.js"></script>
+	 	<script type="text/javascript" src="/static/pagination.js"></script>
+		<STYLE TYPE="text/css">
+		 <!--
+			 TD{font-family: Arial; font-size: 10pt;}
+		 -->     
+		<style type="text/css">
+			A:link {text-decoration: none}
+			A:visited {text-decoration: none}
+			A:active {text-decoration: none}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">var _kiq = _kiq || [];</script>
+		<script type="text/javascript" src="//s3.amazonaws.com/ki.js/33181/6se.js" async="true"></script>
+		<div></br></br></br>
+                </div>
+		<div id="container">
+			<div id="header">
+				<center>
+					<h1>Github Account Details</h1>
+				</center>
+			</div>
+			<div id="body">
+				<ul class="nav nav-pills">
+                                	<li class="active"><a href="/">Home</a></li>
+                        	</ul>
+				<div id="repo_div" style="width:600; overflow:auto">
+				{%if data_list%}
+					<table class="paginated" cellspacing="0" cellpadding="0" style="width:600; overflow:auto">
+						<caption>
+							search result of <b>{{topic}}</b>
+						</caption>
+						{%for repos in data_list%}
+							<tr>
+								<td style="width:600px">
+									<center>
+										<font size="3" color="red">
+											<b>{{repos.name}}</b>
+										</font>
+										<a href="{{repos.url}}/zipball/master/" style="text-decoration:none">&nbsp;&nbsp;(Download)</a>
+									</center> </br>
+									<b>Username:</b>{{repos.username}}</br>
+									<b>Description:</b>{{repos.description}}</br>
+									<b>Language:</b>{{repos.language}}</br>
+									<b>Owner:</b>{{repos.owner}}</br>
+									<b>Created At:</b>{{repos.created_at}}</br>
+									<b>Watchers:</b>{{repos.watchers}}</br>
+							<!--		<b>Followers:</b>{{repos.followers}}</br>  -->
+									{%if repos.homepage%}
+										<b>Home Page:</b><a href="{{repos.homepage}}" target="_blank">{{repos.homepage}}</a></br>
+									{%endif%}
+									<b><a href="/topic_username/{{repos.username}}"  >More details</a></b></br>
+								</td>
+							</tr>
+						{%endfor%}
+					</table>
+
+				{%else%}
+					{{message}}
+				{%endif%}
+				</div>
+				<div id="table_content" style="width:370; overflow:auto">
+					{%if data_list%}
+						<font size="2">Search results :
+							<b> {{num_result}} </b>
+						</font>
+						<table class="paginated" cellspacing="0" cellpadding="0" style="width:370;">
+						        <thead>
+						                <tr>
+									<th style="width:120px">UserName</th>
+									<th style="width:160px">RepoName</th>
+									<th style="width:90px">Search</th>
+								</tr>
+					 	       </thead>
+					        	<tbody>
+				        	        	{% for name in data_list%}
+					         	      		<tr id={{forloop.counter}}>
+										<td class="read_only">{{name.username}}</td>
+										<td class="read_only">{{name.name}}</td>
+										<td class="read_only"><a href="/topic_username/{{name.username}}" >More Details</a></td>
+						               		</tr>
+					         	       {%endfor%}
+						        </tbody>
+						</table>
+
+					{%endif%}
+				</div>
+			</div>
+			<div id="footer">
+				<center>
+					<font size=1 color="maroon">Copyright statement. Designed by Anoop.S.M</br>All rights reserved.</font>
+				</center>
+			</div>
+		</div>
+	</body>
+</html>
+

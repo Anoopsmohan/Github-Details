@@ -1,0 +1,131 @@
+<html lang="en"> 
+<head> 
+	<title>Github Resume</title> 
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/reset-fonts-grids/reset-fonts-grids.css" media="all" /> 
+	<link rel="stylesheet" type="text/css" href="/static/resume.css" media="all" /> 
+</head> 
+<body id="resume"> 
+<div id="doc2" class="yui-t7">
+	<div id="inner" class="vcard">
+
+		<div id="hd">
+			<div class="yui-gc">
+				<div class="yui-u first">
+					<hgroup>
+						<h1 class="fn">{%if lists.name%}{{lists.name}}{%else%}{{lists.login}}{%endif%}</h1>
+						<h2>Passionate github user</h2>
+					</hgroup>
+				</div>
+
+				<div class="yui-u">
+					<div class="contact-info">
+						<img src="{{lists.avatar_url}}" alt="" class="photo" />
+						{% autoescape on%}<h3><a href="mailto:{{lists.email}}" class="email">{{lists.email}}</a></h3>{% endautoescape %}
+					</div><!--// .contact-info -->
+				</div>
+			</div><!--// .yui-gc -->
+		</div><!--// hd -->
+
+		<div id="bd">
+			<div id="yui-main">
+				<div class="yui-b">
+
+					<div id="profile" class="yui-gf">
+						<div class="yui-u first">
+							<h2>Github Profile</h2>
+						</div>
+						<div class="yui-u">
+							<p class="enlarge">
+								 I'm a developer
+								 {%if lists.location%}
+								 based in <span class="adr locality">{{lists.location}}</span>
+								 {%endif%}
+								 with <a href="https://github.com/{{lists.login}}">{{lists.public_repos}} public repositories</a>{%if lists.followers%}&nbsp;and {{lists.followers}} followers. {% endif %}
+								 I've been using github.com since {{created_at}}{% if lists.blog %}&nbsp;and sometimes I blog at <a href="{{lists.blog}}" id="myblog" class="url" title="my blog">{{lists.blog|urlize}}</a>{% endif %}.
+							</p>
+							<p id="languages" class="enlarge"></p>
+						</div>
+					</div><!--// .yui-gf -->
+                    			<div class="yui-gf" id="mylanguages"> 
+			                        <div class="yui-u first">
+                        				 <h2>Languages</h2>
+			                        </div>
+                        			<div class="yui-u" id="content-languages">
+							{%for key, value in langs.items%}
+                        				 	<ul class="talent">
+								{%ifequal forloop.counter 3%}
+									<li ><a href="https://github.com/languages/{{key}}">{{key}}</a>- {{value}}% </li>
+								{%else%}
+									<li><a href="https://github.com/languages/{{key}}">{{key}}</a>- {{value}}% </li>  
+								{%endifequal%}
+								</ul>   
+							{%endfor%}
+                        			</div>
+			                </div>
+					<div id="repositories" class="yui-gf">
+						<div class="yui-u first">
+							<h2>My Popular Repositories</h2>
+						</div><!--// .yui-u -->
+
+						<div class="yui-u" id="jobs">
+			                        <!--	<span>Loading information...</span><img src="static/img/loader.gif" />  -->
+							{%for repo in repos%}
+							<div class="job ">
+								<h2>
+									  <a href="{{repo.html_url}}">{{repo.name}}</a>
+								</h2>
+								<h3>{%if repo.language%}{{repo.language}}-{%endif%}  Creator &amp; Owner</h3>
+								<h4>{{repo.created_at}}</h4>
+								<p>{{repo.description}}</p>
+								<p>
+									This repository has {{repo.watchers}} watcher(s) and {{repo.forks}} fork(s). 
+									If you would like more information about this repository and my 
+									contributed code, please visit 
+									<a href="{{repo.html_url}}">the repo</a> on 
+									Github.
+								</p>
+							</div>
+							{%endfor%}
+						</div><!--// .yui-u -->
+					</div><!--// .yui-gf -->
+					{%if orgs%}
+			                <div class="yui-gf" id="organizations">
+						<div class="yui-u first">
+							<h2>My Organizations</h2>
+						</div><!--// .yui-u -->
+
+						<div class="yui-u" id="orgs">
+						{%for org in orgs%}
+						<div class="org ">
+							<h2>{%if org.name%}{{org.name}}{%else%}{{org.login}}{%endif%}</h2>
+							<h3>Member</h3>
+					<!--		<h4>2012</h4>   -->
+                                <p>If you would like more information about this organization, please visit <a href="https://github.com/">the organization page</a> on Github.</p>
+						</div>
+						{%endfor%}
+						</div><!--// .yui-u -->
+					</div><!--// .yui-gf -->
+					{%endif%}
+					<div id="about" class="yui-gf last">
+						<div class="yui-u first">
+							<h2>About This R&eacute;sum&eacute;</h2>
+						</div>
+						<div class="yui-u">
+							<p class="enlarge">
+								This r&eacute;sum&eacute; is generated automatically using information from my github account. The repositories are
+								ordered by popularity based on a very simple popularity heuristic that defines the popularity of a repository
+								by its sum of watchers and forks. Do not hesitate to visit <a href="{{lists.html_url}}" title="My Github page">my github page</a>
+								for more information about my repositories and work.
+							</p>
+						</div>
+					</div><!--// .yui-gf -->
+				</div><!--// .yui-b -->
+			</div><!--// yui-main -->
+		</div><!--// bd -->
+		<div id="ft">
+			<p>{%if lists.name%}{{lists.name}}{%else%}{{lists.login}}{%endif%} &mdash;{%if lists.email%} <a href="mailto:{{lists.email}}">{{lists.email}}</a>{%endif%}&mdash; <a href="{{lists.html_url}}" title="Github profile" class="url">{{lists.html_url}}</a></p>
+		</div><!--// footer -->
+	</div><!-- // inner -->
+</div><!--// doc -->
+</body>
+</html>

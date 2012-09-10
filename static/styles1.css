@@ -1,0 +1,52 @@
+html,body{margin:0;padding:0}
+body{font: 80%, arial,sans-serif;text-align:center}
+li{margin:0 10px 10px}
+/*table#table1{width : 6666660%}  */
+div#header{background-color:#cccccc;}
+div#header h1{height:80px;line-height:80px;margin:0;padding-left:10px;}
+div#container{text-align:left;  background-color:#FFF;}
+
+div#body{margin:10px;height:450px;auto}
+/*div#footer{ bottom:0; width:100%; height:60px;}  */
+
+div#footer{background:#cccccc;}
+/*div#footer p{margin:0;padding:5px 10px} */
+div#container{width:1000px;margin:0 auto}
+/*div#footer{clear:both;width:100%}  */
+div#footer{clear:both; width:1000px;margin:0 }
+div#repo_div {width:600px; float:right}
+div#user_div{width:380px; float: left}
+div#table_content{width:380px; float:left}
+
+div#side_bar{width:170px;float:left}
+div#index_table_content{width:330px;float:left}
+div#index_repo_div{width:480px;float:left}
+div#fb_comment{auto}
+div#email_div {width:600px; float:left}
+/*div#error_msg{width:910px;float:left}  */
+
+BODY { background-image: url(/static/img/bg/3.jpg) }
+BODY { background-repeat:repeat-xy }
+BODY { background-position: center }
+
+
+
+.searchbox input {
+background-image: url('/static/img/searchbg.png');
+width: 238px;
+height: 24px;
+float: left;
+padding: 2px;
+border: 0;
+outline:none;
+}
+
+.searchbtn input {
+background-image: url('/static/img/searchbtn.png');
+color: #fff;
+font-weight: bold; 
+width: 86px; 
+height: 24px;
+border: 0;
+float: left;
+}

@@ -1,0 +1,201 @@
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="/static/styles.css" />
+		<link type="text/css" rel="stylesheet" href="/static/css_button.css" />
+		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+		<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+	        <style type="text/css">
+        	        @import '/static/pagination.css';
+	        </style>
+        	<script type="text/javascript" src="/static/DOMhelp.js"></script>
+	        <script type="text/javascript" src="/static/pagination.js"></script>
+		<STYLE TYPE="text/css">
+		<!--
+			TD{font-family: Arial; font-size: 10pt;}
+		-->
+		</STYLE>
+		<style type="text/css">
+			A:link {text-decoration: none}
+			A:visited {text-decoration: none}
+			A:active {text-decoration: none}
+		</style>  
+	</head>
+	<body>
+		<script type="text/javascript">var _kiq = _kiq || [];</script>
+		<script type="text/javascript" src="//s3.amazonaws.com/ki.js/33181/6se.js" async="true"></script>
+
+		<div></br></br></br>
+		</div>
+		<div id="container">  
+			<div id="header">
+				<center>
+					<h1>Github Account Details</h1>
+				</center>
+			</div>
+			<div id="body">
+				<ul class="nav nav-pills">
+                                	<li class="active"><a href="/">Home</a></li>
+	                        </ul>
+				{%if error%}
+<!--					<strong>
+						<font color="red" size=4>Error:</font>
+					</strong>
+					<font size=2 face="arial black" color="black">{{error}} </font><br/>    -->
+
+				{%else%}
+					<center>
+						Github user details of <b>{{lists.login}}</b>
+
+					</center>
+				{% if org_type.type %}
+					<font color="royal blue2">Do you want to know the organization details of <b>{{org_type.type}}?</b></font>
+					<div class="buttonwrapper1">
+						<a class="boldbuttonses" href="/org_members/{{org_type.type}}"><span>Organization details of<b> {{org_type.type}}</b></span></a>	</br> 
+					</div> 
+				{%endif%}  
+				<div id="user_div">
+					{%if lists.login%}
+						<table style="width:370; overflow:auto" cellspacing="0" cellpadding="0">
+							<caption> 
+						<!--		Github user details of <b>{{lists.login}}</b>  -->
+							</caption>
+	<img src="{{lists.avatar_url}}" alt="" class="photo" />
+							<tr>
+								<td style="width:150px">Login Name </td>
+								<td style="width:220px">{{lists.login}}</td>
+							</tr>
+							{%if lists.name%}
+								<tr>
+									<td>Full Name </td>
+									<td>{{lists.name}}</td>
+								</tr>
+							{%endif%}
+							<tr>
+								<td>Created Date </td>
+								<td>{{lists.created_at}}</td>
+							</tr>
+							<tr>
+								<td>Followers </td>
+								<td>{{lists.followers}}</td>
+							</tr>
+							{%if lists.blog%}
+								<tr>
+									<td>Blog </td>
+									<td>{{lists.blog|urlize}}</td>
+								</tr>
+							{%endif%}
+							{%if lists.email%}
+								<tr>
+									<td>Email </td>
+									<td>{{lists.email}}</td>
+								</tr>
+							{%endif%}
+							<tr>
+								<td>Public Repositories </td>
+								<td>{{lists.public_repos}}</td>
+							</tr>
+							{%if lists.public_gists%}	
+								<tr>
+									<td>Public gists</td>
+									<td>{{lists.public_gists}}</td>
+								</tr>
+							{%endif%}
+							{%if lists.company%}
+								<tr>
+									<td>Company</td>
+									<td>{{lists.company}}</td>
+								</tr>
+							{%endif%}
+							<tr>
+								<td>URL </td>
+								<td><a href = "{{lists.html_url}}" target="_blank">{{lists.html_url}}</a></td>
+							</tr>
+							<tr>
+								<td>Type </td>
+								<td>{{lists.type}}</td>
+							</tr>
+							<tr>
+								<td>Id </td>
+								<td>{{lists.id}}</td>
+							</tr>
+							{%if lists.location%}
+								<tr>
+									<td>Location </td>
+									<td>{{lists.location}}</td>
+								</tr>
+							{%endif%}
+						</table>
+					{%else%}
+						{{message}}
+					{%endif%}
+				</div>
+				<div id="repo_div" style="width:600; overflow:auto">
+					{%if repos%}
+						<table class="paginated" cellspacing="0" cellpadding="0" style="width:600; overflow:auto">
+							<caption>
+								Repository details of <b>{{name}}</b>
+							</caption>
+							{% for repo in repos%}
+								<tr>
+									<td style="width:600px">
+										<center>
+											<font size="3" color="red">
+												<b>{{repo.name}}</b>
+											</font>
+											<a href="{{repo.html_url}}/zipball/master/" style="text-decoration:none">&nbsp;&nbsp;(Download)</a>
+										</center></br>
+										{%if repo.description%}
+											<b>Description :</b>{{repo.description}}</br>
+										{%endif%} 
+										<b>Date : </b>{{repo.created_at}}</br>
+										{%if repo.updated_at%}
+											<b>Updated date : </b>{{repo.updated_at}} </br>
+										{%endif%}
+										{%if repo.language%}
+                                                                                        <b>Language : </b>{{repo.language}} </br>
+                                                                		{%endif%}
+                                                                		{%if repo.watchers%}
+                                                                                        <b>Watchers : </b>{{repo.watchers}} </br>
+		                                                                {%endif%}
+										{%if repo.git_homepage%}
+                                                                                        <b>Home Page : </b>{{repo.homepage}} </br>
+                                                              			{%endif%}
+                                                                		{%if repo.forks%}
+                                                                                        <b>Number of Forks : </b>{{repo.forks}}</br>
+                                                               			{%endif%}
+                                                                                <b>Fork : </b>{{repo.fork}}</br>
+                                                                		{% if repo.homepage%}
+                                                                                        <b>Home page : </b><a href="{{repo.homepage}}" target="_blank">{{repo.homepage}}</a> </br>
+                                                                		{%endif%}
+										<b>URL : </b><a href="{{repo.html_url}}" target="_blank">{{repo.html_url}}</a></br>
+								         </td>
+								</tr>
+				                      	{%endfor%}
+                                                </table> </br>
+                                        {%endif%}
+                                </div>
+
+				{% if org_type.type %}
+					<div class="buttonwrapper"></br>
+						<p>
+							<font color="purple4">Click the following button to view the Organization details of <b>{{org_type.type}}</b>
+							</font>
+						</p>
+						<a class="boldbuttons" href="/org_members/{{org_type.type}}"><span>Organization details of<b> {{org_type.type}}</b></span>
+						</a>
+					</div>
+				{%endif%}
+				<div id="table_content">
+				</div>
+			{%endif%}
+			</div>
+			<div id="footer">
+				<center>
+                                        <font size=1 color="maroon">Copyright statement. Designed by Anoop.S.M</br>All rights reserved.</font>
+				</center>
+			</div>
+		</div>
+	</body>
+</html>
+
+

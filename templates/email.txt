@@ -1,0 +1,7 @@
+Hello {{name}},
+Welcome to Github Account Details and thanks for using My Application.
+
+Thanks and Regards,
+Anoop.S.M
+Software Engineer @ Beevolve
+Mob: +91 8147527842

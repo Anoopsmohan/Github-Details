@@ -1,0 +1,196 @@
+<html>
+	<head><title></title>
+		<link type="text/css" rel="stylesheet" href="/static/styles.css" />
+		<link type="text/css" rel="stylesheet" href="/static/css_button.css" />
+		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+		<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+	        <style type="text/css">
+	                 @import '/static/pagination.css';
+	        </style>
+	        <script type="text/javascript" src="/static/DOMhelp.js"></script>
+	        <script type="text/javascript" src="/static/pagination.js"></script>
+		<STYLE TYPE="text/css">
+		<!--
+			TD{font-family: Arial; font-size: 10pt;}
+		-->
+		</STYLE>
+		<style type="text/css">
+			A:link {text-decoration: none}
+			A:visited {text-decoration: none}
+			A:active {text-decoration: none}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">var _kiq = _kiq || [];</script>
+		<script type="text/javascript" src="//s3.amazonaws.com/ki.js/33181/6se.js" async="true"></script>
+
+		<div></br></br></br>
+                </div>
+		<div id="container">
+			<div id="header">
+				<center>
+					<h1>Github Account Details</h1>
+				</center>
+			</div>
+			<div id="body">
+				<ul class="nav nav-pills">
+                                	<li class="active"><a href="/">Home</a></li>
+	                        </ul>
+				{%if lists%}
+					<center>
+						<h3>Organization details of<b> {{org_name}}</b></h3>
+					</center>
+					<div id="user_div" style="width:370; overflow:auto">
+<img src="https://secure.gravatar.com/avatar/{{lists.gravatar_id}}?s=140&amp;d=https://github.com/images/gravatars/gravatar-140.png" alt="" class="photo" /    >                
+						<table cellspacing="0" cellpadding="0" style="width:370; overflow:auto">
+							<caption> 
+								Github user details of <b>{{lists.name}}</b>
+							</caption>
+							<tr>
+								<td style="width:150px">Login Name </td>
+								<td style="width:220px">{{lists.login}}</td>
+							</tr>
+							{%if lists.name%}
+								<tr>
+									<td>Full Name </td>
+									<td>{{lists.name}}</td>
+								</tr>
+							{%endif%}
+							<tr>
+								<td>Created Date </td>
+								<td>{{lists.created_at}}</td>
+							</tr>
+							<tr>
+								<td>Followers </td>
+								<td>{{lists.followers}}</td>
+							</tr>
+							{%if lists.blog%}
+								<tr>
+									<td>Blog </td>
+									<td>{{lists.blog|urlize}}</td>
+								</tr>
+							{%endif%}
+							{%if lists.email%}
+								<tr>
+									<td>Email </td>
+									<td>{{lists.email}}</td>
+								</tr>
+							{%endif%}
+							<tr>
+								<td>Public Repositories </td>
+								<td>{{lists.public_repos}}</td>
+							</tr>
+							{%if lists.public_gists%}
+							<tr>
+								<td>Public gists</td>
+								<td>{{lists.public_gists}}</td>
+							</tr>
+							{%endif%}
+							{%if lists.company%}
+							<tr>
+								<td>Company</td>
+								<td>{{lists.company}}</td>
+							</tr>
+							{%endif%}
+							<tr>
+								<td>URL </td>
+								<td><a href = "{{lists.html_url}}" target="_blank">{{lists.html_url}}</a></td>
+							</tr>
+							<tr>
+								<td>Type </td>
+								<td>{{lists.type}}</td>
+							</tr>
+							<tr>
+								<td>Id </td>
+								<td>{{lists.id}}</td>
+							</tr>
+							{%if lists.location%}
+								<tr>
+									<td>Location </td>
+									<td>{{lists.location}}</td>
+								</tr>
+							{%endif%}
+						</table></br>
+					</div>
+				{%endif%}
+				<div id="repo_div" style="width:600; overflow:auto">
+					{%if repos%}
+						<table class="paginated" cellspacing="0" cellpadding="0" style="width:600; overflow:auto" >
+						        <caption>
+								Repository details of <b>{{lists.login}}</b>
+							</caption>
+							{% for repo in repos%}		
+						        <tr>
+								<td>
+									<center>
+										<font size="3" color="red"><b>{{repo.name}}</b></font>
+										<a href="{{repo.html_url}}/zipball/master/" style="text-decoration:none">&nbsp;&nbsp;(Download)</a>
+									</center></br>
+							                {%if repo.description%}
+								                <b>Description :</b>{{repo.description}}</br>
+								        {%endif%}
+								        <b>Date : </b>{{repo.created_at}}</br>
+								        {%if repo.updated_at%}
+								                <b>Updated date : </b>{{repo.updated_at}}</br>
+								        {%endif%}
+								        {%if repo.language%}
+								                <b>Language : </b>{{repo.language}}</br>
+								        {%endif%}
+								        {%if repo.watchers%}
+								                <b>Watchers : </b>{{repo.watchers}}</br>
+								        {%endif%}
+        								{%if repo.git_homepage%}
+								                <b>Home Page : </b>{{repo.homepage}}</br>
+								        {%endif%}
+								        {%if repo.forks%}
+								                <b>Number of Forks : </b>{{repo.forks}}</br>
+								        {%endif%}
+								        <b>Fork : </b>{{repo.fork}}</br>
+								        {% if repo.homepage%}
+								                <b>Home page : </b><a href="{{repo.homepage}}" target="_blank">{{repo.homepage}}</a></br>
+								        {%endif%}
+								        <b>URL : </b><a href="{{repo.html_url}}" target="_blank">{{repo.html_url}}</a></br>
+								</td>
+							</tr>
+							{%endfor%}
+						</table> </br>
+					{%endif%}
+				</div>
+				<div id="table_content" style="width:370; overflow:auto">
+					{%if name_list%}
+					<table >
+						<b>{{num_emp}}</b>&nbsp;Employess has github account.
+					  	<caption> Please select the <b>Username</b></caption>
+						<thead>
+							<tr>
+								<th style="width:150px">User Name</th>
+								<th style="width:110px">Id</th>
+								<th style="width:110px">Search</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for name in name_list%}
+								<tr>
+									<td>{{name.login}}</td>
+									<td>{{name.id}}</td>
+									<td><a href="/org_member/{{org_name}}/{{name.login}}" >Search</a></td>
+								</tr>
+							{%endfor%}
+						</tbody>
+					</table>
+					{%else%}
+						<div class="alert">
+		                                    <strong>Warning!</strong> No data found. Please try with other Organization name.
+                		                </div>
+			<!--			<h2>Sorry! No data found. Please try with other Organization name. </h2>  -->
+					{%endif%}
+				</div>
+			</div>
+			<div id="footer">
+				<center>
+					<font size=1 color="maroon">Copyright statement. Designed by Anoop.S.M</br>All rights reserved.</font>
+				</center>
+			</div>
+		</div>
+	</body>
+</html>
