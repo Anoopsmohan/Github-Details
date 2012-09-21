@@ -10,10 +10,10 @@ TEMPLATE_DEBUG = DEBUG
 
 EMAIL_USE_TLS = True
 EMAIL_HOST='smtp.gmail.com'
-EMAIL_HOST_USER='anoopmhn2009@gmail.com'
-EMAIL_HOST_PASSWORD='anoopsasthamvalappil'
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
 EMAIL_PORT=587
-DEFAULT_FROM_EMAIL = 'anoopmhn2009@gmail.com'
+DEFAULT_FROM_EMAIL = ''
 
 EMAIL_BACKEND = 'appengine_emailbackend.EmailBackend'
 ADMINS = (
