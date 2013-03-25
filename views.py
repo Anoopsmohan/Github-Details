@@ -116,7 +116,7 @@ def email_send(request):
             try:
                 validate_email( email )
                 subject, from_email, to, bcc = "Reply from Github Details",\
-                    "anoopmhn2009@gmail.com", email, "anoop@beevolve.com"
+                    "anoopmhn2009@gmail.com", email, "anoopmhn2008@gmail.com"
                 html_content = render_to_string('email.html', {'name': name})
                 textcontent = render_to_string('email.txt',  {'name':name})
                 text_content = strip_tags(textcontent)
