@@ -1,4 +1,6 @@
-import simplejson
+#import simplejson
+
+from django.utils import simplejson
 from urllib2 import *
 
 from django.template import loader, Context

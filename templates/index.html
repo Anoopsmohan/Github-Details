@@ -3,10 +3,13 @@
 		<title>Github Account Details</title>
 		<link type="text/css" rel="stylesheet" href="static/styles.css" />
 		<link rel="stylesheet" href="/static/agile_carousel.css" type='text/css'>
-		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
+		 <link rel="stylesheet" href="/static/bootstrap.css" type='text/css'> 
+    <link rel="stylesheet" href="/static/bootstrap.min.css" type='text/css'>
+		<!-- <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" /> -->
 		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-		<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-typeahead.js"></script>
-		<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="/static/bootstrap.js"></script>
+		<!-- <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-typeahead.js"></script>
+		<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script> -->
 		<script type="text/javascript" src="/static/DOMhelp.js"></script>
                 <script type="text/javascript" src="/static/pagination.js"></script>
 		<style type="text/css">
@@ -55,7 +58,7 @@
 		<!-- Clock  -->
 		<iframe src="http://free.timeanddate.com/clock/i2zoeiel/n1892/fn14/fs16/fc0ff/tc000/ftbi/bas2/bat1/bacfff/pa8/tt0/tw1/th1/ta1/tb4" frameborder="0" width="255" height="58"></iframe>  </br>
 
-                <div id="container">
+    <div id="container">
 			<div id="header">
 				<center>
 					<font color="maroon">
@@ -86,32 +89,28 @@
 						            <li><a href="http://dj-urlappspot.com" target="_blank">URL Shortener(dj)</a></li>
 					          </ul>
 				        </li>
-					<li>
-						<g:plusone annotation="inline" width="120"></g:plusone>
-					</li>
-					<li>
-						<div class="fb-like" data-send="true" data-layout="button_count" data-width="350" data-show-faces="true"></div>
-					</li>
-			         </ul>
-				 </div>
-
-
+					      <li>
+						      <g:plusone annotation="inline" width="120"></g:plusone>
+					      </li>
+					      <li>
+						      <div class="fb-like" data-send="true" data-layout="button_count" data-width="350" data-show-faces="true"></div>
+					      </li>
+			  </ul> 
+				</div>
 				{%if error%}
-                                       	<div class="alert">
-			                        <strong>Warning!</strong> {{error}}
-                                        </div>
-                                {%endif%}
- 
+          <div class="alert">
+			      <strong>Warning!</strong> {{error}}
+          </div>
+        {%endif%}
 				<div id="side_bar">
-				<ul class="nav nav-pills">
-                                        <li>
-                                                <!-- Facebook Badge START --><a href="http://www.facebook.com/anoopmhn" target="_TOP" title="Anoop Mohan"><img src="http://badge.facebook.com/badge/100000371739134.2613.634736657.png" style="border: 0px;" /></a><!-- Facebook Badge END -->
-					</li>
-
-					<li>
-						<!-- Facebook Badge START --><a href="http://www.facebook.com/anoopmhn" target="_TOP" title="Anoop Mohan"><img src="http://badge.facebook.com/badge/100000371739134.2614.351681280.png" style="border: 0px;" /></a><br/><!-- Facebook Badge END -->
-					</li>
-				</ul>
+				  <ul class="nav nav-pills">
+            <li>
+              <!-- Facebook Badge START --><a href="http://www.facebook.com/anoopmhn" target="_TOP" title="Anoop Mohan"><img src="http://badge.facebook.com/badge/100000371739134.2613.634736657.png" style="border: 0px;" /></a><!-- Facebook Badge END -->
+					  </li>
+					  <li>
+						  <!-- Facebook Badge START --><a href="http://www.facebook.com/anoopmhn" target="_TOP" title="Anoop Mohan"><img src="http://badge.facebook.com/badge/100000371739134.2614.351681280.png" style="border: 0px;" /></a><br/><!-- Facebook Badge END -->
+					  </li>
+				  </ul>
  				</div>
 				<font style="font-family:Garamond,  Times New Roman, Times, serif; color: #444;font-size:12pt">
 Github Account Details can help you to search your github account (personal and repository) details, Organization details, topic searching, downloading, more over it helps you for <b>Generate a Resume from Your Github Account</b> .</font> </br> </br>
