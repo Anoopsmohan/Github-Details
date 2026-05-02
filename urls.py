@@ -1,21 +1,20 @@
-"""
-    urls
+"""URL routes for the Github Details application."""
+from django.urls import path
 
-    Handles urls of github application
-"""
-from django.conf.urls.defaults import *
+import views
 
-urlpatterns = patterns('',
-    (r'^$','views.index'),
-    (r'^org_members/(?P<org_name>[\w-]+)$', 'views.org_details'),
-    (
-        r'^org_member/(?P<org_name>[\w-]+)/(?P<user_name>[\w-]+)$',\
-            'views.org_details'
+urlpatterns = [
+    path("", views.index, name="index"),
+    path("org_members/<slug:org_name>", views.org_details, name="org_details"),
+    path(
+        "org_member/<slug:org_name>/<slug:user_name>",
+        views.org_details,
+        name="org_member_details",
     ),
-    (r'^topic_username/(?P<user_name>[\w-]+)$', 'views.details'),
-    (r'^topic_search$', 'views.topic_search'),
-    (r'^username_search$', 'views.username_search'),
-    (r'^contact$', 'views.contact'),
-    (r'^email_send', 'views.email_send'),
-    (r'^user_resume', 'views.user_resume'),
-)
+    path("topic_username/<slug:user_name>", views.details, name="details"),
+    path("topic_search", views.topic_search, name="topic_search"),
+    path("username_search", views.username_search, name="username_search"),
+    path("contact", views.contact, name="contact"),
+    path("email_send", views.email_send, name="email_send"),
+    path("user_resume", views.user_resume, name="user_resume"),
+]

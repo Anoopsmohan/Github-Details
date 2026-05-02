@@ -1,14 +1,4 @@
-import logging
+"""Compatibility alias for the removed async App Engine email backend."""
+from .default import EmailBackend
 
-from django.core.exceptions import ImproperlyConfigured
-
-try:
-    import default
-except ImportError, err:
-    raise ImproperlyConfigured(('Failed to import App Engine libraries: %s'
-                                % err))
-
-
-class EmailBackend(default.EmailBackend):
-    can_defer = True
-
+__all__ = ["EmailBackend"]

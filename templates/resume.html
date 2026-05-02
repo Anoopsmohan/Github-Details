@@ -53,11 +53,11 @@
                         			<div class="yui-u" id="content-languages">
 							{%for key, value in langs.items%}
                         				 	<ul class="talent">
-								{%ifequal forloop.counter 3%}
+								{% if forloop.counter == 3 %}
 									<li ><a href="https://github.com/languages/{{key}}">{{key}}</a>- {{value}}% </li>
-								{%else%}
+								{% else %}
 									<li><a href="https://github.com/languages/{{key}}">{{key}}</a>- {{value}}% </li>  
-								{%endifequal%}
+								{% endif %}
 								</ul>   
 							{%endfor%}
                         			</div>

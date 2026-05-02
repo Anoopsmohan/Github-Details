@@ -143,6 +143,7 @@ Github Account Details can help you to search your github account (personal and 
 					</br>
 					<font size=2>Create your Github Resume.</font>
 					<form method="POST" action="user_resume">
+                                                {% csrf_token %}
                                                 <table>
                                                         <tr>
                                                                 <td>
@@ -161,6 +162,7 @@ Github Account Details can help you to search your github account (personal and 
 
 					<font size=2>Do you want to search particular topic?</font>
 					<form method="POST" action="topic_search">
+                                                {% csrf_token %}
 						<table>
 							<tr>
 								<td>
@@ -177,6 +179,7 @@ Github Account Details can help you to search your github account (personal and 
 					</form>
 					<font size=2>Do you want to search a user account details?</font>
 					<form method="POST" action="username_search">
+                                                {% csrf_token %}
 						<table>
 							<tr>
 								<td>

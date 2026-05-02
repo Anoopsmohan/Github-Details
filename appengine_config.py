@@ -1,3 +1,1 @@
-# Declare the Django version we need.
-from google.appengine.dist import use_library
-use_library('django', '1.2')
+"""Legacy App Engine hook kept as a no-op for historical deployments."""

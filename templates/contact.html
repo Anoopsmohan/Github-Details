@@ -103,6 +103,7 @@
 <p>If you don't want to use the contact info above feel free to send an Email to me now - I'm always open for suggestions and questions, criticism and praise.</p></br>
 					<font size="3" color="blue">Send an Email to me</font></br></br>
 					<form method="POST" action="email_send">
+                                                {% csrf_token %}
                                                 <table style="width:600; overflow:auto">
                                                         <tr>
 								<td style="width:100px">

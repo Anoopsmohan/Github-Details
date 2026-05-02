@@ -1,3 +1,4 @@
-"""E-mail backend implementations for App Engine."""
+"""Compatibility package for the removed App Engine email backend."""
+from .default import EmailBackend
 
-from default import EmailBackend
+__all__ = ["EmailBackend"]

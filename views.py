@@ -1,295 +1,269 @@
-#import simplejson
+"""Views for searching GitHub account, organization, and repository data."""
+from collections import Counter
+from urllib.error import HTTPError, URLError
+from urllib.parse import quote
+from urllib.request import Request, urlopen
+import json
 
-from django.utils import simplejson
-from urllib2 import *
-
-from django.template import loader, Context
-from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-from django.core.mail import EmailMessage
-from django.core.validators import validate_email
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.validators import validate_email
+from django.shortcuts import render
+from django.utils.html import strip_tags
+from django.template.loader import render_to_string
+
+
+GITHUB_API = "https://api.github.com"
 
 
 def index(request):
-    """
-    Render the index page
-    """
-    return render_to_response('index.html')
-
-
-def user_resume(request):
-    """
-    Generate the resume for the corresponding username.
-    """
-    user_name = request.POST.get('resume')
-    user_name = '-'.join(user_name.split(' '))
-    try:
-        user = urlopen('https://api.github.com/users/'+user_name)
-        result_user = simplejson.load(user)
-        created_at = result_user['created_at'].split('-')
-        created_at = created_at[0]
-        result_org = None
-        list_repo = None
-        langs = {}
-        org = {}
-        newlist = []
-        try:
-            if result_user['type'] == 'Organization':
-                org['type'] = result_user['login']
-            else:
-                org['type'] = None
-            repo = urlopen('https://api.github.com/users/'+user_name+'/repos')
-            result_repo = simplejson.load(repo)
-            list_repo = result_repo[::-1]
-            for dicts in list_repo:
-                repo_create = dicts['created_at'].split('-')
-                repo_create = repo_create[0]
-                for x,y in dicts.items():
-                    dicts['created_at'] = repo_create
-                fork = dicts['fork']
-                lang = dicts['language']
-                if lang in langs and fork != True:
-                    langs[lang] += 1
-                elif lang != '' and lang != 'null' and lang != None\
-                        and fork != True:
-                    langs[lang] = 1
-                total = langs.values()
-                total = reduce(lambda x, y:x+y, total)
-                for x,y in langs.items():
-                    langs[x] = int((float(y)/float(total))*100)
-                filter_repo_list = []
-                for dicts in list_repo:
-                    watchers = dicts['watchers']
-                    forks = dicts['forks']
-                    priority = watchers + forks
-                    dicts['priority'] = priority
-                    if dicts['fork'] != True:
-                        filter_repo_list.append(dicts)
-                    newlist = (
-                        (
-                            sorted(
-                                filter_repo_list, key=lambda k: k['priority']
-                            )
-                        )[::-1]
-                    )[:5]
-                    message=''
-        except:
-            message = "Username doesnot exist. Try with another username."
-        t = loader.get_template('resume.html')
-        c = Context(
-            {
-                'created_at': created_at,
-                'lists': result_user,
-                'repos': newlist,
-                'orgs': result_org,
-                'langs': langs,
-                'message': message
-            }
-        )
-        return HttpResponse(t.render(c))
-    except URLError, e:
-        msg='''The username you submitted (%s) doesnot appear to be a valid\
-        one! <br/>%s.''' %(request.POST.get('resume'),str(e))
-        return handleError(request,msg,'index.html')
-
-
-def email_send(request):
-    """
-    Users can send email to administrator from contacts
-    """
-    email = ''
-    name = ''
-    msg = ''
-    email = str(request.POST.get('email'))
-    name = str(request.POST.get('name'))
-    message = str(request.POST.get('msg'))
-    warning = ''
-    success = ''
-    success1 = ''
-    error = ''
-    body = "Email from : "+name+"\nEmail : "+email+"\n\nMessage : \n\n"+message
-    if email and name and message:
-	try:
-            try:
-                validate_email( email )
-                subject, from_email, to, bcc = "Reply from Github Details",\
-                    "anoopmhn2009@gmail.com", email, "anoopmhn2008@gmail.com"
-                html_content = render_to_string('email.html', {'name': name})
-                textcontent = render_to_string('email.txt',  {'name':name})
-                text_content = strip_tags(textcontent)
-                msg = EmailMultiAlternatives(
-                    subject, text_content, from_email, [to],[bcc]
-                )
-                msg.attach_alternative(html_content, "text/html")
-                msg.send()
-                success = "Your Email id verified successfully.\
-                    Please check your Inbox"
-                try:
-                    email_msg = EmailMessage (
-                        'Email from Github Accound Details',
-                        body,
-                        to=['anoopmhn2009@gmail.com']
-                    )
-                    email_msg.send()
-                    success1 = "Email send Successfully!"
-                except:
-                    error = "There was a problem. Please try after some time"
-            except ValidationError:
-                error = "Invalid Email Id, please correct it!"
-        except:
-            error = "There was a problem while sending the email.\
-                Please check your email Id"
-    else:
-        if not email:
-            warning = "Please enter the email!"
-        elif not name:
-            warning = "Please enter the name!"
-        elif not message:
-            warning = "Please enter the message!"
-        c = RequestContext(
-            request,{
-                'warning': warning,
-                'success': success,
-                'success1': success1,
-                'error': error,
-                'name': name,
-                'msg': message,
-                'email': email
-            }
-        )
-    return render_to_response('contact.html',c)
+    """Render the index page."""
+    return render(request, "index.html")
 
 
 def contact(request):
-    """
-    Render the contact page.
-    """
-    return render_to_response('contact.html')
+    """Render the contact page."""
+    return render(request, "contact.html")
 
 
-def handleError(request,msg,template,param=None):
-    if param is None:
-	param={}
-    param['error']=msg
-    return render_to_response(template,param)
+def _github_get(path):
+    request = Request(
+        f"{GITHUB_API}{path}",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "github-details-django",
+        },
+    )
+    with urlopen(request, timeout=15) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def _username_from_post(request, field_name):
+    return "-".join((request.POST.get(field_name) or "").strip().split())
+
+
+def _error_message(value, exc):
+    detail = getattr(exc, "reason", exc)
+    return (
+        f"The value you submitted ({value}) does not appear to be valid. "
+        f"<br/>{detail}."
+    )
+
+
+def _user_and_repos(user_name):
+    user = _github_get(f"/users/{quote(user_name)}")
+    repos = _github_get(f"/users/{quote(user_name)}/repos?per_page=100&sort=updated")
+    return user, repos
+
+
+def _repo_year(repo):
+    created_at = repo.get("created_at") or ""
+    return created_at.split("-", 1)[0] if "-" in created_at else created_at
 
 
 def username_search(request):
-    user_name = request.POST.get('user_search')
-    user_name = '-'.join(user_name.split(' '))
+    user_name = _username_from_post(request, "user_search")
     try:
-        user = urlopen('https://api.github.com/users/'+user_name)
-        result_user = simplejson.load(user)
-        org={}
-        list_repo=None
-        try:
-            if result_user['type'] == 'Organization':
-                org['type'] = result_user['login']
-            else:
-                org['type'] = None
-            repo = urlopen(
-                'https://api.github.com/users/'+ user_name +'/repos'
-            )
-            result_repo = simplejson.load(repo)
-            list_repo = result_repo[::-1]
-            message=''
-        except:
-            message = "Username doesnot exist. Try with another username."
-        t = loader.get_template('details.html')
-        c =Context(
-            {
-                'name': user_name,
-                'lists': result_user,
-                'repos': list_repo,
-                'org_type': org,
-                'message': message
-            }
+        user, repos = _user_and_repos(user_name)
+    except (HTTPError, URLError, TimeoutError) as exc:
+        return render(
+            request,
+            "index.html",
+            {"error": _error_message(request.POST.get("user_search"), exc)},
         )
-        return HttpResponse(t.render(c))
-    except URLError, e:
-        msg='''The username you submitted (%s) doesnot appear to be a\
-            valid one! <br/>%s.''' %(request.POST.get('user_search'),str(e))
-        return handleError(request,msg,'index.html')
+
+    return render(
+        request,
+        "details.html",
+        {
+            "name": user_name,
+            "lists": user,
+            "repos": list(reversed(repos)),
+            "org_type": {"type": user["login"] if user.get("type") == "Organization" else None},
+            "message": "",
+        },
+    )
 
 
 def topic_search(request):
-    topic = request.POST.get('searchbox')
-    topic = '-'.join(topic.split(' '))
+    topic = _username_from_post(request, "searchbox")
     try:
-        topic_details = urlopen(
-            'https://api.github.com/legacy/repos/search/'+topic
+        result = _github_get(f"/search/repositories?q={quote(topic)}&per_page=100")
+    except (HTTPError, URLError, TimeoutError) as exc:
+        return render(
+            request,
+            "index.html",
+            {"error": _error_message(request.POST.get("searchbox"), exc)},
         )
-        result = simplejson.load(topic_details)
-        data= result['repositories']
-        num_result = len(data)
-        if len(data)!= 0:
-            message = " "
-        else:
-            message = "No data found. Please search another keyword."
-        c=Context(
-            {
-                'data_list': data,
-                'message': message,
-                'topic': topic,
-                'num_result': num_result
-            }
-        )
-        return render_to_response('topic_details.html',c)
-    except URLError, e:
-        msg='''The topic you submitted (%s) doesnot appear to be a valid one!\
-        <br/>%s.''' %(request.POST.get('user_search'),str(e))
-        return handleError(request,msg,'index.html')
+
+    repositories = [_normalize_search_repo(repo) for repo in result.get("items", [])]
+    return render(
+        request,
+        "topic_details.html",
+        {
+            "data_list": repositories,
+            "message": " " if repositories else "No data found. Please search another keyword.",
+            "topic": topic,
+            "num_result": result.get("total_count", len(repositories)),
+        },
+    )
+
+
+def _normalize_search_repo(repo):
+    owner = repo.get("owner") or {}
+    login = owner.get("login", "")
+    return {
+        "name": repo.get("name"),
+        "username": login,
+        "description": repo.get("description"),
+        "language": repo.get("language"),
+        "owner": login,
+        "created_at": repo.get("created_at"),
+        "watchers": repo.get("watchers_count"),
+        "homepage": repo.get("homepage"),
+        "url": repo.get("html_url"),
+    }
 
 
 def details(request, user_name, topic_name=None):
-    user = urlopen('https://api.github.com/users/'+user_name)
-    result_user = simplejson.load(user)
-    org={}
-    if result_user['type'] == 'Organization':
-        org['type'] = result_user['login']
-    else:
-        org['type'] = None
-    repo = urlopen('https://api.github.com/users/'+ user_name +'/repos')
-    result_repo = simplejson.load(repo)
-    list_repo = result_repo[::-1]
-    t = loader.get_template('details.html')
-    c =Context(
+    del topic_name
+    user, repos = _user_and_repos(user_name)
+    return render(
+        request,
+        "details.html",
         {
-            'name': user_name,
-            'lists': result_user,
-            'repos': list_repo,
-            'org_type': org
-        }
+            "name": user_name,
+            "lists": user,
+            "repos": list(reversed(repos)),
+            "org_type": {"type": user["login"] if user.get("type") == "Organization" else None},
+        },
     )
-    return HttpResponse(t.render(c))
 
 
 def org_details(request, org_name, user_name=None):
-    org = urlopen('https://api.github.com/orgs/'+org_name+'/members')
-    org_members = simplejson.load(org)
-    num_emp = len(org_members)
-    list_repo = None
-    result_user = None
-    if user_name:
-        user = urlopen('https://api.github.com/users/'+user_name)
-        result_user = simplejson.load(user)
-        repo = urlopen('https://api.github.com/users/'+user_name+'/repos')
-        result_repo = simplejson.load(repo)
-        list_repo = result_repo[::-1]
+    try:
+        org_members = _github_get(f"/orgs/{quote(org_name)}/members?per_page=100")
+        user = None
+        repos = None
+        if user_name:
+            user, repos = _user_and_repos(user_name)
+            repos = list(reversed(repos))
+    except (HTTPError, URLError, TimeoutError):
+        org_members = []
+        user = None
+        repos = None
 
-    t = loader.get_template('org_details.html')
-    c = Context(
+    return render(
+        request,
+        "org_details.html",
         {
-            'name_list': org_members,
-            'org_name': org_name,
-            'num_emp': num_emp,
-            'repos': list_repo,
-            'lists': result_user
-        }
+            "name_list": org_members,
+            "org_name": org_name,
+            "num_emp": len(org_members),
+            "repos": repos,
+            "lists": user,
+        },
     )
-    return HttpResponse(t.render(c))
+
+
+def user_resume(request):
+    user_name = _username_from_post(request, "resume")
+    try:
+        user, repos = _user_and_repos(user_name)
+    except (HTTPError, URLError, TimeoutError) as exc:
+        return render(
+            request,
+            "index.html",
+            {"error": _error_message(request.POST.get("resume"), exc)},
+        )
+
+    language_counts = Counter(
+        repo.get("language")
+        for repo in repos
+        if repo.get("language") and not repo.get("fork")
+    )
+    total_languages = sum(language_counts.values())
+    languages = {
+        language: int((count / total_languages) * 100)
+        for language, count in language_counts.items()
+    } if total_languages else {}
+
+    top_repositories = sorted(
+        (
+            {**repo, "created_at": _repo_year(repo), "priority": repo.get("watchers_count", 0) + repo.get("forks_count", 0)}
+            for repo in repos
+            if not repo.get("fork")
+        ),
+        key=lambda repo: repo["priority"],
+        reverse=True,
+    )[:5]
+
+    created_at = (user.get("created_at") or "").split("-", 1)[0]
+    return render(
+        request,
+        "resume.html",
+        {
+            "created_at": created_at,
+            "lists": user,
+            "repos": top_repositories,
+            "orgs": None,
+            "langs": languages,
+            "message": "",
+        },
+    )
+
+
+def email_send(request):
+    email = str(request.POST.get("email") or "")
+    name = str(request.POST.get("name") or "")
+    message = str(request.POST.get("msg") or "")
+    context = {
+        "warning": "",
+        "success": "",
+        "success1": "",
+        "error": "",
+        "name": name,
+        "msg": message,
+        "email": email,
+    }
+
+    if not email:
+        context["warning"] = "Please enter the email!"
+    elif not name:
+        context["warning"] = "Please enter the name!"
+    elif not message:
+        context["warning"] = "Please enter the message!"
+    else:
+        try:
+            validate_email(email)
+            html_content = render_to_string("email.html", {"name": name})
+            text_content = strip_tags(render_to_string("email.txt", {"name": name}))
+            reply = EmailMultiAlternatives(
+                "Reply from Github Details",
+                text_content,
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+            )
+            reply.attach_alternative(html_content, "text/html")
+            reply.send()
+            context["success"] = "Your Email id verified successfully. Please check your Inbox"
+
+            body = f"Email from : {name}\nEmail : {email}\n\nMessage : \n\n{message}"
+            contact_email = EmailMessage(
+                "Email from Github Account Details",
+                body,
+                settings.DEFAULT_FROM_EMAIL,
+                [settings.CONTACT_TO_EMAIL],
+            )
+            contact_email.send()
+            context["success1"] = "Email sent Successfully!"
+        except ValidationError:
+            context["error"] = "Invalid Email Id, please correct it!"
+        except Exception:
+            context["error"] = (
+                "There was a problem while sending the email. "
+                "Please check your email Id"
+            )
+
+    return render(request, "contact.html", context)
