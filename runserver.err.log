@@ -1,3 +1,1 @@
 Watching for file changes with StatReloader
-[02/May/2026 17:58:39] "GET / HTTP/1.1" 200 11850
-[02/May/2026 17:58:40,023] - Broken pipe from ('127.0.0.1', 60151)

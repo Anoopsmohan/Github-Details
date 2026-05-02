@@ -5,13 +5,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 import json
 
-from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.core.mail import EmailMessage, EmailMultiAlternatives
-from django.core.validators import validate_email
 from django.shortcuts import render
-from django.utils.html import strip_tags
-from django.template.loader import render_to_string
 
 
 GITHUB_API = "https://api.github.com"
@@ -20,11 +14,6 @@ GITHUB_API = "https://api.github.com"
 def index(request):
     """Render the index page."""
     return render(request, "index.html")
-
-
-def contact(request):
-    """Render the contact page."""
-    return render(request, "contact.html")
 
 
 def _github_get(path):
@@ -63,6 +52,8 @@ def _repo_year(repo):
 
 
 def username_search(request):
+    if request.method != "POST":
+        return render(request, "index.html")
     user_name = _username_from_post(request, "user_search")
     try:
         user, repos = _user_and_repos(user_name)
@@ -87,6 +78,8 @@ def username_search(request):
 
 
 def topic_search(request):
+    if request.method != "POST":
+        return render(request, "index.html")
     topic = _username_from_post(request, "searchbox")
     try:
         result = _github_get(f"/search/repositories?q={quote(topic)}&per_page=100")
@@ -168,6 +161,8 @@ def org_details(request, org_name, user_name=None):
 
 
 def user_resume(request):
+    if request.method != "POST":
+        return render(request, "index.html")
     user_name = _username_from_post(request, "resume")
     try:
         user, repos = _user_and_repos(user_name)
@@ -212,58 +207,3 @@ def user_resume(request):
             "message": "",
         },
     )
-
-
-def email_send(request):
-    email = str(request.POST.get("email") or "")
-    name = str(request.POST.get("name") or "")
-    message = str(request.POST.get("msg") or "")
-    context = {
-        "warning": "",
-        "success": "",
-        "success1": "",
-        "error": "",
-        "name": name,
-        "msg": message,
-        "email": email,
-    }
-
-    if not email:
-        context["warning"] = "Please enter the email!"
-    elif not name:
-        context["warning"] = "Please enter the name!"
-    elif not message:
-        context["warning"] = "Please enter the message!"
-    else:
-        try:
-            validate_email(email)
-            html_content = render_to_string("email.html", {"name": name})
-            text_content = strip_tags(render_to_string("email.txt", {"name": name}))
-            reply = EmailMultiAlternatives(
-                "Reply from Github Details",
-                text_content,
-                settings.DEFAULT_FROM_EMAIL,
-                [email],
-            )
-            reply.attach_alternative(html_content, "text/html")
-            reply.send()
-            context["success"] = "Your Email id verified successfully. Please check your Inbox"
-
-            body = f"Email from : {name}\nEmail : {email}\n\nMessage : \n\n{message}"
-            contact_email = EmailMessage(
-                "Email from Github Account Details",
-                body,
-                settings.DEFAULT_FROM_EMAIL,
-                [settings.CONTACT_TO_EMAIL],
-            )
-            contact_email.send()
-            context["success1"] = "Email sent Successfully!"
-        except ValidationError:
-            context["error"] = "Invalid Email Id, please correct it!"
-        except Exception:
-            context["error"] = (
-                "There was a problem while sending the email. "
-                "Please check your email Id"
-            )
-
-    return render(request, "contact.html", context)

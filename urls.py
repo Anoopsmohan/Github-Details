@@ -14,7 +14,5 @@ urlpatterns = [
     path("topic_username/<slug:user_name>", views.details, name="details"),
     path("topic_search", views.topic_search, name="topic_search"),
     path("username_search", views.username_search, name="username_search"),
-    path("contact", views.contact, name="contact"),
-    path("email_send", views.email_send, name="email_send"),
     path("user_resume", views.user_resume, name="user_resume"),
 ]
