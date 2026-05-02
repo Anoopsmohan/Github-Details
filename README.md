@@ -24,3 +24,8 @@ python manage.py runserver
 ```
 
 Open http://127.0.0.1:8000/.
+
+## Documentation
+
+Project documentation and the high-level design diagram are available in
+[docs/PROJECT_DOCUMENTATION.md](docs/PROJECT_DOCUMENTATION.md).
